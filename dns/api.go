@@ -87,7 +87,7 @@ func UpdateRecord(recordId string, rr string, recordType string, value string) e
 	req.Type = recordType
 	req.Value = value
 	_, e = dnsClient.UpdateDomainRecord(req)
-	se := e.(*errors.ServerError)
+	se, _ := e.(*errors.ServerError)
 	if se != nil && se.ErrorCode() == "DomainRecordDuplicate" {
 		log.Println("dns.UpdateRecord 成功。相同记录已存在")
 		return nil
