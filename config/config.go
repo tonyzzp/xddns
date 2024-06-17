@@ -2,6 +2,7 @@ package config
 
 import (
 	"os"
+	"path/filepath"
 
 	"gopkg.in/yaml.v3"
 )
@@ -14,9 +15,27 @@ type appConfig struct {
 
 var Config *appConfig
 
-func Init(configFile string) error {
+func findConfigFile(file string) string {
+	if file != "" {
+		return file
+	}
+	name := "ali_config.yaml"
+	fi, e := os.Stat(name)
+	if e == nil && fi != nil && !fi.IsDir() {
+		return name
+	}
+	dir, e := os.Executable()
+	if e != nil {
+		return name
+	}
+	file = filepath.Join(filepath.Dir(dir), name)
+	return file
+}
+
+func Init(file string) error {
+	file = findConfigFile(file)
 	Config = &appConfig{}
-	r, e := os.OpenFile(configFile, os.O_RDONLY, os.ModePerm)
+	r, e := os.OpenFile(file, os.O_RDONLY, os.ModePerm)
 	if e != nil {
 		return e
 	}

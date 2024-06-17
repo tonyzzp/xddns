@@ -3,7 +3,7 @@ package main
 import "github.com/urfave/cli/v2"
 
 var flagRR = &cli.StringFlag{
-	Name:     "value",
+	Name:     "rr",
 	Required: true,
 }
 
@@ -32,4 +32,10 @@ var flagIpType = &cli.StringFlag{
 	Name:     "type",
 	Usage:    "ip类型:  ipv4/ipv6",
 	Required: true,
+}
+
+var flagConfig = &cli.StringFlag{
+	Name:     "config",
+	Usage:    "ali_config.yaml文件",
+	Required: false,
 }
