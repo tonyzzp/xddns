@@ -1,5 +1,14 @@
 
 
+### 配置
+
+在当前目录放`ali_config.yaml`文件，内容如下
+```yaml
+region: cn-shenzhen
+keyid: xxxxx
+keysecret: xxxx
+```
+
 ### 直接设置dns
 
 ```bash
