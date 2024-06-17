@@ -13,6 +13,7 @@ func test(ctx *cli.Context) error {
 }
 
 func main() {
+	log.SetOutput(os.Stdout)
 	app := &cli.App{
 		Flags: []cli.Flag{flagConfig},
 		Commands: []*cli.Command{
