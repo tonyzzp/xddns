@@ -2,7 +2,7 @@
 
 ### 配置
 
-在当前目录放`ali_config.yaml`文件，内容如下
+配置文件`ali_config.yaml` (**搜索路径顺序:workingdir,exedir**)，内容如下
 ```yaml
 region: cn-shenzhen
 keyid: xxxxx
