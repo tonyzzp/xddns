@@ -17,16 +17,8 @@ var cmdUpdate = &cli.Command{
 	Usage:  "设置为本机ip",
 	Action: cmdUpdateAction,
 	Flags: []cli.Flag{
-		&cli.StringFlag{
-			Name:     "type",
-			Usage:    "ip类型:  ipv4/ipv6",
-			Required: true,
-		},
-		&cli.StringFlag{
-			Name:     "domains",
-			Usage:    "域名。多个使用逗号隔开",
-			Required: true,
-		},
+		flagIpType,
+		flagDomains,
 	},
 }
 

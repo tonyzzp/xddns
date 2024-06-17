@@ -18,22 +18,10 @@ var cmdSet = &cli.Command{
 	Name:  "set",
 	Usage: "set dns record",
 	Flags: []cli.Flag{
-		&cli.StringFlag{
-			Name:     "type",
-			Required: true,
-		},
-		&cli.StringFlag{
-			Name:     "domain",
-			Required: true,
-		},
-		&cli.StringFlag{
-			Name:     "rr",
-			Required: true,
-		},
-		&cli.StringFlag{
-			Name:     "value",
-			Required: true,
-		},
+		flagDomain,
+		flagRR,
+		flagRecordType,
+		flagValue,
 	},
 	Action: cmdSetAction,
 }
