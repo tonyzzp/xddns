@@ -136,3 +136,18 @@ func DelRecord(domain string, rr string, recordType string) error {
 	}
 	return errors.New("delrecord failed: " + resp.String())
 }
+
+func GetAllRecords(domain string) (*alidns.DescribeDomainRecordsResponse, error) {
+	log.Println("dns.GetAllRecords", domain)
+	e := initDnsClient()
+	if e != nil {
+		return nil, e
+	}
+
+	req := alidns.CreateDescribeDomainRecordsRequest()
+	// req.Domain = domain
+	req.DomainName = domain
+	req.PageSize = "100"
+	resp, e := dnsClient.DescribeDomainRecords(req)
+	return resp, e
+}

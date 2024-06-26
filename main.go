@@ -21,6 +21,7 @@ func main() {
 			cmdSet,
 			cmdUpdate,
 			cmdDel,
+			cmdDump,
 			{
 				Name:   "test",
 				Action: test,
