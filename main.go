@@ -15,10 +15,12 @@ func test(ctx *cli.Context) error {
 func main() {
 	log.SetOutput(os.Stdout)
 	app := &cli.App{
+		Usage: "操作阿里dns解析记录",
 		Flags: []cli.Flag{flagConfig},
 		Commands: []*cli.Command{
 			cmdSet,
 			cmdUpdate,
+			cmdDel,
 			{
 				Name:   "test",
 				Action: test,

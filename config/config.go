@@ -19,11 +19,15 @@ func findConfigFile(file string) string {
 	if file != "" {
 		return file
 	}
+
+	// 查找工作目录
 	name := "ali_config.yaml"
 	fi, e := os.Stat(name)
 	if e == nil && fi != nil && !fi.IsDir() {
 		return name
 	}
+
+	// 查找exe目录
 	dir, e := os.Executable()
 	if e != nil {
 		return name

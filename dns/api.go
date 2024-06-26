@@ -2,9 +2,10 @@ package dns
 
 import (
 	"ali-ddns/config"
+	"errors"
 	"log"
 
-	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/errors"
+	alierrors "github.com/aliyun/alibaba-cloud-sdk-go/sdk/errors"
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/alidns"
 )
 
@@ -87,7 +88,7 @@ func UpdateRecord(recordId string, rr string, recordType string, value string) e
 	req.Type = recordType
 	req.Value = value
 	_, e = dnsClient.UpdateDomainRecord(req)
-	se, _ := e.(*errors.ServerError)
+	se, _ := e.(*alierrors.ServerError)
 	if se != nil && se.ErrorCode() == "DomainRecordDuplicate" {
 		log.Println("dns.UpdateRecord 成功。相同记录已存在")
 		return nil
@@ -106,4 +107,32 @@ func EditRecord(domain string, rr string, recordType string, value string) error
 	} else {
 		return UpdateRecord(exist.RecordId, rr, recordType, value)
 	}
+}
+
+func DelRecord(domain string, rr string, recordType string) error {
+	log.Println("dns.DelRecord", domain, rr, recordType)
+	e := initDnsClient()
+	if e != nil {
+		return nil
+	}
+	exist, e := QueryRecord(rr+"."+domain, recordType)
+	if e != nil {
+		return e
+	}
+	if exist == nil {
+		log.Println("记录不存在")
+		return nil
+	}
+	req := alidns.CreateDeleteSubDomainRecordsRequest()
+	req.DomainName = exist.DomainName
+	req.RR = exist.RR
+	req.Type = exist.Type
+	resp, e := dnsClient.DeleteSubDomainRecords(req)
+	if e != nil {
+		return e
+	}
+	if resp.IsSuccess() {
+		return nil
+	}
+	return errors.New("delrecord failed: " + resp.String())
 }
