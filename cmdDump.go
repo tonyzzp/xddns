@@ -8,7 +8,7 @@ import (
 )
 
 func cmdDumpAction(ctx *cli.Context) error {
-	domain := ctx.String("domain")
+	domain := flagDomain.Get(ctx)
 	resp, e := dns.GetAllRecords(domain)
 	if e != nil {
 		return e

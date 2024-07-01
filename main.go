@@ -2,6 +2,7 @@ package main
 
 import (
 	"ali-ddns/config"
+	"ali-ddns/dns"
 	"log"
 	"os"
 
@@ -9,6 +10,10 @@ import (
 )
 
 func test(ctx *cli.Context) error {
+	dns.ResolveDomain("pi.veikr.com")
+	dns.ResolveDomain("qm.pi.veikr.com")
+	dns.ResolveDomain("veikr.com")
+	dns.ResolveDomain("www.izzp.me")
 	return nil
 }
 

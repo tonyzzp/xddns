@@ -2,29 +2,20 @@ package main
 
 import "github.com/urfave/cli/v2"
 
-var flagRR = &cli.StringFlag{
-	Name:     "rr",
-	Required: true,
-}
-
 var flagDomain = &cli.StringFlag{
 	Name:     "domain",
 	Required: true,
+	Usage:    "完整域名，如: veikr.com , qm.pi.veikr.com",
 }
 
 var flagRecordType = &cli.StringFlag{
 	Name:     "type",
 	Required: true,
+	Usage:    "A, AAAA, CNAME, TXT",
 }
 
 var flagValue = &cli.StringFlag{
 	Name:     "value",
-	Required: true,
-}
-
-var flagDomains = &cli.StringFlag{
-	Name:     "domains",
-	Usage:    "域名。多个使用逗号隔开",
 	Required: true,
 }
 

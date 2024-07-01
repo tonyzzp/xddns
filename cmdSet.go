@@ -7,11 +7,10 @@ import (
 )
 
 func cmdSetAction(ctx *cli.Context) error {
-	t := ctx.String("type")
-	domain := ctx.String("domain")
-	rr := ctx.String("rr")
-	value := ctx.String("value")
-	return dns.EditRecord(domain, rr, t, value)
+	t := flagRecordType.Get(ctx)
+	domain := flagDomain.Get(ctx)
+	value := flagValue.Get(ctx)
+	return dns.EditRecord(domain, t, value)
 }
 
 var cmdSet = &cli.Command{
@@ -19,7 +18,6 @@ var cmdSet = &cli.Command{
 	Usage: "set dns record",
 	Flags: []cli.Flag{
 		flagDomain,
-		flagRR,
 		flagRecordType,
 		flagValue,
 	},
