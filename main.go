@@ -1,8 +1,8 @@
 package main
 
 import (
+	"ali-ddns/ali"
 	"ali-ddns/config"
-	"ali-ddns/dns"
 	"log"
 	"os"
 
@@ -10,10 +10,10 @@ import (
 )
 
 func test(ctx *cli.Context) error {
-	dns.ResolveDomain("pi.veikr.com")
-	dns.ResolveDomain("qm.pi.veikr.com")
-	dns.ResolveDomain("veikr.com")
-	dns.ResolveDomain("www.izzp.me")
+	ali.ResolveDomain("pi.veikr.com")
+	ali.ResolveDomain("qm.pi.veikr.com")
+	ali.ResolveDomain("veikr.com")
+	ali.ResolveDomain("www.izzp.me")
 	return nil
 }
 

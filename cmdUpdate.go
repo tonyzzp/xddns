@@ -1,7 +1,7 @@
 package main
 
 import (
-	"ali-ddns/dns"
+	"ali-ddns/ali"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -31,11 +31,11 @@ func cmdUpdateAction(ctx *cli.Context) error {
 	log.Println("updateAction", domain, ipType, ip)
 	var recordType = ""
 	if ipType == "ipv4" {
-		recordType = dns.RECORD_TYPE_A
+		recordType = ali.RECORD_TYPE_A
 	} else {
-		recordType = dns.RECORD_TYPE_AAAA
+		recordType = ali.RECORD_TYPE_AAAA
 	}
-	return dns.EditRecord(dns.EditRecordParams{
+	return ali.EditRecord(ali.EditRecordParams{
 		Domain: domain,
 		Type:   recordType,
 		Value:  ip,

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"ali-ddns/dns"
+	"ali-ddns/ali"
 	"log"
 
 	"github.com/urfave/cli/v2"
@@ -9,7 +9,7 @@ import (
 
 func cmdDumpAction(ctx *cli.Context) error {
 	domain := flagDomain.Get(ctx)
-	resp, e := dns.GetAllRecords(domain)
+	resp, e := ali.GetAllRecords(domain)
 	if e != nil {
 		return e
 	}

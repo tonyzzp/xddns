@@ -1,7 +1,7 @@
 package main
 
 import (
-	"ali-ddns/dns"
+	"ali-ddns/ali"
 
 	"github.com/urfave/cli/v2"
 )
@@ -21,7 +21,7 @@ func actionAdd(ctx *cli.Context) error {
 	domain := flagDomain.Get(ctx)
 	t := flagRecordType.Get(ctx)
 	value := flagValue.Get(ctx)
-	return dns.AddRecord(dns.AddRecordParams{
+	return ali.AddRecord(ali.AddRecordParams{
 		Domain: domain,
 		Type:   t,
 		Value:  value,

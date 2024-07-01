@@ -1,4 +1,4 @@
-package dns
+package ali
 
 import (
 	"ali-ddns/config"
