@@ -9,7 +9,10 @@ import (
 func cmdDelAction(ctx *cli.Context) error {
 	t := flagRecordType.Get(ctx)
 	domain := flagDomain.Get(ctx)
-	return dns.DelRecord(domain, t)
+	return dns.DelRecord(dns.DelRecordParams{
+		Domain: domain,
+		Type:   t,
+	})
 }
 
 var cmdDel = &cli.Command{

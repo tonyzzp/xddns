@@ -21,15 +21,6 @@ var cmdUpdate = &cli.Command{
 	},
 }
 
-func _update(domain string, recordType string, value string) error {
-	log.Println("_update", domain, recordType, value)
-	e := dns.EditRecord(domain, recordType, value)
-	if e != nil {
-		return e
-	}
-	return nil
-}
-
 func cmdUpdateAction(ctx *cli.Context) error {
 	var domain = flagDomain.Get(ctx)
 	var ipType = flagIpType.Get(ctx)
@@ -44,7 +35,11 @@ func cmdUpdateAction(ctx *cli.Context) error {
 	} else {
 		recordType = dns.RECORD_TYPE_AAAA
 	}
-	return _update(domain, recordType, ip)
+	return dns.EditRecord(dns.EditRecordParams{
+		Domain: domain,
+		Type:   recordType,
+		Value:  ip,
+	})
 }
 
 func getLocalIP(ipType string) string {

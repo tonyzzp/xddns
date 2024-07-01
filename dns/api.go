@@ -20,6 +20,30 @@ type DomainResolved struct {
 	RR         string
 }
 
+type AddRecordParams struct {
+	Domain string
+	Type   string
+	Value  string
+}
+
+type UpdateRecordParams struct {
+	Id     string
+	Domain string
+	Type   string
+	Value  string
+}
+
+type DelRecordParams struct {
+	Domain string
+	Type   string
+}
+
+type EditRecordParams struct {
+	Domain string
+	Type   string
+	Value  string
+}
+
 var dnsClient *alidns.Client
 
 func initDnsClient() error {
@@ -88,14 +112,14 @@ func QueryRecords(domain string) ([]alidns.Record, error) {
 	return res.DomainRecords.Record, nil
 }
 
-func QueryRecord(subDomain string, recordType string) (*alidns.Record, error) {
+func QueryRecord(domain string, recordType string) (*alidns.Record, error) {
 	e := initDnsClient()
 	if e != nil {
 		return nil, e
 	}
-	log.Println("dns.QueryRecord", subDomain, recordType)
+	log.Println("dns.QueryRecord", domain, recordType)
 	r := alidns.CreateDescribeSubDomainRecordsRequest()
-	r.SubDomain = subDomain
+	r.SubDomain = domain
 	r.Type = recordType
 	res, e := dnsClient.DescribeSubDomainRecords(r)
 	if e != nil {
@@ -110,40 +134,40 @@ func QueryRecord(subDomain string, recordType string) (*alidns.Record, error) {
 	return nil, nil
 }
 
-func AddRecord(domain string, recordType string, value string) error {
+func AddRecord(params AddRecordParams) error {
 	e := initDnsClient()
 	if e != nil {
 		return nil
 	}
-	log.Println("dns.AddRecord", domain, recordType, value)
-	info, e := ResolveDomain(domain)
+	log.Println("dns.AddRecord", params)
+	info, e := ResolveDomain(params.Domain)
 	if e != nil {
 		return e
 	}
 	req := alidns.CreateAddDomainRecordRequest()
 	req.DomainName = info.DomainName
 	req.RR = info.RR
-	req.Type = recordType
-	req.Value = value
+	req.Type = params.Type
+	req.Value = params.Value
 	_, e = dnsClient.AddDomainRecord(req)
 	log.Println("dns.AddRecord result", e)
 	return e
 }
 
-func UpdateRecord(recordId string, domain string, recordType string, value string) error {
+func UpdateRecord(params UpdateRecordParams) error {
 	e := initDnsClient()
 	if e != nil {
 		return nil
 	}
-	info, e := ResolveDomain(domain)
+	info, e := ResolveDomain(params.Domain)
 	if e != nil {
 		return e
 	}
-	log.Println("dns.UpdateRecord", domain, recordId, recordType, value)
+	log.Println("dns.UpdateRecord", params)
 	req := alidns.CreateUpdateDomainRecordRequest()
-	req.RecordId = recordId
-	req.Type = recordType
-	req.Value = value
+	req.RecordId = params.Id
+	req.Type = params.Type
+	req.Value = params.Value
 	req.RR = info.RR
 	_, e = dnsClient.UpdateDomainRecord(req)
 	se, _ := e.(*alierrors.ServerError)
@@ -155,25 +179,34 @@ func UpdateRecord(recordId string, domain string, recordType string, value strin
 	return e
 }
 
-func EditRecord(domain string, recordType string, value string) error {
-	exist, e := QueryRecord(domain, recordType)
+func EditRecord(params EditRecordParams) error {
+	exist, e := QueryRecord(params.Domain, params.Type)
 	if e != nil {
 		return e
 	}
 	if exist == nil {
-		return AddRecord(domain, recordType, value)
+		return AddRecord(AddRecordParams{
+			Domain: params.Domain,
+			Type:   params.Type,
+			Value:  params.Value,
+		})
 	} else {
-		return UpdateRecord(exist.RecordId, domain, recordType, value)
+		return UpdateRecord(UpdateRecordParams{
+			Id:     exist.RecordId,
+			Domain: params.Domain,
+			Type:   params.Type,
+			Value:  params.Value,
+		})
 	}
 }
 
-func DelRecord(domain string, recordType string) error {
-	log.Println("dns.DelRecord", domain, recordType)
+func DelRecord(params DelRecordParams) error {
+	log.Println("dns.DelRecord", params)
 	e := initDnsClient()
 	if e != nil {
 		return nil
 	}
-	exist, e := QueryRecord(domain, recordType)
+	exist, e := QueryRecord(params.Domain, params.Type)
 	if e != nil {
 		return e
 	}

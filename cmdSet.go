@@ -10,7 +10,11 @@ func cmdSetAction(ctx *cli.Context) error {
 	t := flagRecordType.Get(ctx)
 	domain := flagDomain.Get(ctx)
 	value := flagValue.Get(ctx)
-	return dns.EditRecord(domain, t, value)
+	return dns.EditRecord(dns.EditRecordParams{
+		Domain: domain,
+		Type:   t,
+		Value:  value,
+	})
 }
 
 var cmdSet = &cli.Command{
