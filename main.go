@@ -23,6 +23,7 @@ func main() {
 		Usage: "操作阿里dns解析记录",
 		Flags: []cli.Flag{flagConfig},
 		Commands: []*cli.Command{
+			cmdAdd,
 			cmdSet,
 			cmdUpdate,
 			cmdDel,
