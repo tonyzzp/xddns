@@ -33,7 +33,7 @@ func findConfigFile(file string) string {
 	}
 
 	// 查找工作目录
-	name := "ddns-config.yaml"
+	name := "xddns-config.yaml"
 	fi, e := os.Stat(name)
 	if e == nil && fi != nil && !fi.IsDir() {
 		return name

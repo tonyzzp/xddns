@@ -116,6 +116,7 @@ func main() {
 			cmdUpdate,
 			cmdDel,
 			cmdDump,
+			cmdIP,
 			{
 				Name:   "testCloudFlare",
 				Action: testCloudFlare,
@@ -126,9 +127,13 @@ func main() {
 			},
 		},
 		Before: func(ctx *cli.Context) error {
-			configFile := ctx.String("config")
-			log.Println("configFile", configFile)
-			return config.Init(configFile)
+			var actionName = ctx.Args().First()
+			if actionName != "ip" && actionName != "" {
+				configFile := ctx.String("config")
+				log.Println("configFile", configFile)
+				return config.Init(configFile)
+			}
+			return nil
 		},
 	}
 	e := app.Run(os.Args)
