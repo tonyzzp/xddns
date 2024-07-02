@@ -1,7 +1,7 @@
 package main
 
 import (
-	"ali-ddns/dns"
+	"xddns/dns"
 
 	"github.com/urfave/cli/v2"
 )

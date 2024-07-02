@@ -1,4 +1,4 @@
-module ali-ddns
+module xddns
 
 go 1.22.2
 

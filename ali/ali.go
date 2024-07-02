@@ -1,11 +1,11 @@
 package ali
 
 import (
-	"ali-ddns/config"
-	"ali-ddns/dns"
 	"errors"
 	"log"
 	"strings"
+	"xddns/config"
+	"xddns/dns"
 
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/requests"
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/alidns"

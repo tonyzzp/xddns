@@ -1,13 +1,13 @@
 package main
 
 import (
-	"ali-ddns/ali"
-	"ali-ddns/cf"
-	"ali-ddns/config"
-	"ali-ddns/dns"
 	"log"
 	"os"
 	"strings"
+	"xddns/ali"
+	"xddns/cf"
+	"xddns/config"
+	"xddns/dns"
 
 	"github.com/urfave/cli/v2"
 )

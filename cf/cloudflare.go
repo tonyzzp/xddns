@@ -1,11 +1,11 @@
 package cf
 
 import (
-	"ali-ddns/config"
-	"ali-ddns/dns"
 	"context"
 	"errors"
 	"strings"
+	"xddns/config"
+	"xddns/dns"
 
 	"github.com/cloudflare/cloudflare-go/v2"
 	cfdns "github.com/cloudflare/cloudflare-go/v2/dns"

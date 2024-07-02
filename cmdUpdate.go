@@ -1,12 +1,12 @@
 package main
 
 import (
-	"ali-ddns/dns"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
 	"net/http"
+	"xddns/dns"
 
 	"github.com/urfave/cli/v2"
 )
