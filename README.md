@@ -8,7 +8,7 @@ xddns --help set
 
 ### 配置文件
 
-配置文件`ddns-config.yaml` (**搜索路径顺序:workingdir,exedir**)，内容如下
+配置文件`xddns-config.yaml` (**搜索路径顺序:workingdir,exedir**)，内容如下
 ```yaml
 ali:
   region: cn-shenzhen
