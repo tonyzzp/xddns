@@ -27,6 +27,6 @@ var flagIpType = &cli.StringFlag{
 
 var flagConfig = &cli.StringFlag{
 	Name:     "config",
-	Usage:    "ddns-config.yaml文件",
+	Usage:    "xddns-config.yaml文件",
 	Required: false,
 }
