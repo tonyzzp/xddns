@@ -4,12 +4,12 @@ go 1.22.2
 
 require (
 	github.com/aliyun/alibaba-cloud-sdk-go v1.62.763
+	github.com/cloudflare/cloudflare-go/v2 v2.3.0
 	github.com/urfave/cli/v2 v2.27.2
 	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
-	github.com/cloudflare/cloudflare-go/v2 v2.3.0 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.4 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
