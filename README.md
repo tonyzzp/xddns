@@ -1,12 +1,28 @@
 
+### 帮助
+
+```bash
+xddns --help
+xddns --help set
+```
 
 ### 配置文件
 
-配置文件`ali_config.yaml` (**搜索路径顺序:workingdir,exedir**)，内容如下
+配置文件`ddns-config.yaml` (**搜索路径顺序:workingdir,exedir**)，内容如下
 ```yaml
-region: cn-shenzhen
-keyid: xxxxx
-keysecret: xxxx
+ali:
+  region: cn-shenzhen
+  key_id: xxxxx
+  key_secret: xxxxx
+  domains:
+    - a.com
+    - b.com
+
+cloudflare:
+  token: "xxxxx"
+  domains:
+    "a.me": "xxxxxxx zoneid"
+    "b.app": "xxxx zoneid"
 ```
 
 ### 通过命令行参数指定配置文件
@@ -15,20 +31,20 @@ keysecret: xxxx
 
 ```bash
 xddns --config /my/path/config.yaml set ...
-ali-ddsn --config /my/path/config.yaml update ...
+xddns --config /my/path/config.yaml update ...
 ```
 
 
 ### 直接设置dns
 
 ```bash
-xddns set --type A --domain myname.com --r @ --value 192.168.1.101
-xddns set --type CNAME --domain myname.com --r www --value  www.myname.com
+xddns set --type A --domain myname.com --value 192.168.1.101
+xddns set --type CNAME --domain www.myname.com --value  myname.com
 ```
 
 
 ### 直接更新为本机ip
 ```bash
-xddns update --type ipv4 --domains a.myname.com,b.myname.com
-xddns update --type ipv6 --domains a.myname.com
+xddns update --type ipv4 --domain a.myname.com
+xddns update --type ipv6 --domain a.myname.com
 ```

@@ -17,7 +17,7 @@ func cmdDelAction(ctx *cli.Context) error {
 
 var cmdDel = &cli.Command{
 	Name:  "del",
-	Usage: "del dns record",
+	Usage: "del dns records",
 	Flags: []cli.Flag{
 		flagDomain,
 		flagRecordType,
