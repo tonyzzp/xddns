@@ -1,7 +1,7 @@
 package main
 
 import (
-	"ali-ddns/ali"
+	"ali-ddns/dns"
 
 	"github.com/urfave/cli/v2"
 )
@@ -9,7 +9,7 @@ import (
 func cmdDelAction(ctx *cli.Context) error {
 	t := flagRecordType.Get(ctx)
 	domain := flagDomain.Get(ctx)
-	return ali.DelRecord(ali.DelRecordParams{
+	return obtainClient(domain).DelRecord(dns.DelRecordParams{
 		Domain: domain,
 		Type:   t,
 	})

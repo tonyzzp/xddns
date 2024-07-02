@@ -1,19 +1,31 @@
 package config
 
 import (
+	"log"
 	"os"
 	"path/filepath"
 
 	"gopkg.in/yaml.v3"
 )
 
-type appConfig struct {
-	Region    string `yaml:"region"`
-	KeyId     string `yaml:"keyid"`
-	KeySecret string `yaml:"keysecret"`
+type ConfigAli struct {
+	Region    string   `yaml:"region"`
+	KeyId     string   `yaml:"key_id"`
+	KeySecret string   `yaml:"key_secret"`
+	Domains   []string `yaml:"domains"`
 }
 
-var Config *appConfig
+type ConfigCloudFlare struct {
+	Token   string            `yaml:"token"`
+	Domains map[string]string `yaml:"domains"`
+}
+
+type AppConfig struct {
+	Ali        ConfigAli        `yaml:"ali"`
+	CloudFlare ConfigCloudFlare `yaml:"cloudflare"`
+}
+
+var Config *AppConfig
 
 func findConfigFile(file string) string {
 	if file != "" {
@@ -21,7 +33,7 @@ func findConfigFile(file string) string {
 	}
 
 	// 查找工作目录
-	name := "ali_config.yaml"
+	name := "ddns-config.yaml"
 	fi, e := os.Stat(name)
 	if e == nil && fi != nil && !fi.IsDir() {
 		return name
@@ -38,12 +50,13 @@ func findConfigFile(file string) string {
 
 func Init(file string) error {
 	file = findConfigFile(file)
-	Config = &appConfig{}
+	Config = &AppConfig{}
 	r, e := os.OpenFile(file, os.O_RDONLY, os.ModePerm)
 	if e != nil {
 		return e
 	}
 	e = yaml.NewDecoder(r).Decode(Config)
 	r.Close()
+	log.Println(Config)
 	return e
 }
