@@ -3,6 +3,7 @@ package cf
 import (
 	"context"
 	"errors"
+	"log"
 	"strings"
 	"xddns/config"
 	"xddns/dns"
@@ -122,8 +123,10 @@ func (cf *DnsCloudFlare) AddRecord(params dns.AddRecordParams) error {
 }
 
 func (cf *DnsCloudFlare) EditRecord(params dns.EditRecordParams) error {
+	log.Println("cf.EditRecord", params)
 	info, e := cf.resolve(params.Domain)
 	if e != nil {
+		log.Println(e)
 		return e
 	}
 	exist, e := cf.QueryRecords(dns.QueryRecordParams{
@@ -131,6 +134,7 @@ func (cf *DnsCloudFlare) EditRecord(params dns.EditRecordParams) error {
 		Type:   params.Type,
 	})
 	if e != nil {
+		log.Println(e)
 		return e
 	}
 	if len(exist) == 0 {
