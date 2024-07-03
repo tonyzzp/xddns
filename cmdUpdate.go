@@ -1,12 +1,10 @@
 package main
 
 import (
-	"encoding/json"
 	"errors"
-	"fmt"
 	"log"
-	"net/http"
 	"xddns/dns"
+	"xddns/tools"
 
 	"github.com/urfave/cli/v2"
 )
@@ -43,30 +41,16 @@ func cmdUpdateAction(ctx *cli.Context) error {
 }
 
 func getLocalIP(ipType string) string {
-	url := fmt.Sprintf("https://%s.jsonip.com", ipType)
-	var fetch = func() (string, error) {
-		resp, e := http.Get(url)
-		if e != nil {
-			return "", e
-		}
-		if resp.StatusCode != 200 {
-			return "", errors.New("net error")
-		}
-		m := map[string]any{}
-		e = json.NewDecoder(resp.Body).Decode(&m)
-		if e != nil {
-			return "", e
-		}
-		aip, ok := m["ip"]
-		if !ok {
-			return "", errors.New("no ip")
-		}
-		return aip.(string), nil
-	}
 	retryTimes := 0
 	for retryTimes < 3 {
 		retryTimes++
-		ip, e := fetch()
+		var ip string
+		var e error
+		if ipType == "ipv4" {
+			ip, e = tools.GetExternalIpv4()
+		} else {
+			ip, e = tools.GetExternalIpv6()
+		}
 		if e == nil && ip != "" {
 			return ip
 		}
