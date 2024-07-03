@@ -8,10 +8,14 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"time"
 )
 
 func get(t string) (string, error) {
-	resp, e := http.Get(fmt.Sprintf("https://%s.jsonip.com", t))
+	client := http.Client{
+		Timeout: time.Second * 5,
+	}
+	resp, e := client.Get(fmt.Sprintf("https://%s.jsonip.com", t))
 	if e != nil {
 		return "", e
 	}
@@ -45,9 +49,11 @@ func GetExternalIpv4() (string, error) {
 	return get("ipv4")
 }
 
+// 获取本机的公网ipv6地址。优先获取eui64格式地址。
+// 如果本机没有公网地址，则会返回实际访问外网使用的ipv6地址(一般是上级路由公网地址),同时返回一个error
 func GetExternalIpv6() (string, error) {
-	ip, e := get("ipv6")
-	log.Println("jsonip", ip)
+	remoteIP, e := get("ipv6")
+	log.Println("jsonip", remoteIP)
 	if e != nil {
 		return "", e
 	}
@@ -83,15 +89,27 @@ func GetExternalIpv6() (string, error) {
 			}
 		}
 	}
-	log.Println("所有全球单播ipv6")
+	log.Println("所有公网全球单播ipv6数量", len(ips))
 	for _, v := range ips {
 		log.Println(v)
-		if isEUI64(v.IP) {
-			return v.IP.String(), nil
+	}
+	var found string
+	if len(ips) > 0 {
+		for _, ip := range ips {
+			if isEUI64(ip.IP) {
+				log.Println("找到eui64格式ip")
+				found = ip.IP.String()
+				break
+			}
+		}
+		if found == "" {
+			found = ips[0].IP.String()
 		}
 	}
-	if len(ips) > 0 {
-		return ips[0].String(), nil
+	log.Println("found", found)
+	if found != "" {
+		return found, nil
+	} else {
+		return remoteIP, errors.New("no global unicast ipv6")
 	}
-	return ip, nil
 }
