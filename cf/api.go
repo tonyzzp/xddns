@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -75,7 +74,6 @@ func (api *_API) get(p string, params map[string]string, result any) error {
 			requestUrl = requestUrl + url.QueryEscape(k) + "=" + url.QueryEscape(v) + "&"
 		}
 	}
-	log.Println("api.get", requestUrl)
 	req, e := http.NewRequest(http.MethodGet, requestUrl, nil)
 	if e != nil {
 		return e
