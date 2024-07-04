@@ -16,7 +16,28 @@ func testCloudFlare(ctx *cli.Context) error {
 	c := cf.New()
 	log.Println(c.ListMainDomains())
 	log.Println(c.QueryRecords(dns.QueryRecordParams{Domain: "izzp.me"}))
+	log.Println(c.QueryRecords(dns.QueryRecordParams{Domain: "www.izzp.me"}))
 	log.Println(c.ListAllRecords("izzp.me"))
+
+	log.Println("增加")
+	log.Println(c.AddRecord(dns.AddRecordParams{
+		Domain: "test.izzp.me",
+		Type:   "A",
+		Value:  "1.1.1.4",
+	}))
+
+	// log.Println("edit")
+	// log.Println(c.EditRecord(dns.EditRecordParams{
+	// 	Domain: "test.izzp.me",
+	// 	Type:   "A",
+	// 	Value:  "1.2.3.4",
+	// }))
+
+	log.Println("delete")
+	log.Println(c.DelRecord(dns.DelRecordParams{
+		Domain: "test.izzp.me",
+		Type:   "A",
+	}))
 	return nil
 }
 

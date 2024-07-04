@@ -7,23 +7,16 @@ import (
 	"strings"
 	"xddns/config"
 	"xddns/dns"
-
-	"github.com/cloudflare/cloudflare-go/v2"
-	cfdns "github.com/cloudflare/cloudflare-go/v2/dns"
-	"github.com/cloudflare/cloudflare-go/v2/option"
 )
 
 type DnsCloudFlare struct {
-	ctx    context.Context
-	client *cloudflare.Client
-	cfg    config.ConfigCloudFlare
+	ctx context.Context
+	cfg config.ConfigCloudFlare
 }
 
 func New() *DnsCloudFlare {
+	api.Token = config.Config.CloudFlare.Token
 	return &DnsCloudFlare{
-		client: cloudflare.NewClient(
-			option.WithAPIToken(config.Config.CloudFlare.Token),
-		),
 		cfg: config.Config.CloudFlare,
 		ctx: context.Background(),
 	}
@@ -61,9 +54,7 @@ func (cf *DnsCloudFlare) ListAllRecords(domain string) ([]dns.Record, error) {
 	if e != nil {
 		return nil, e
 	}
-	res, e := cf.client.DNS.Records.List(cf.ctx, cfdns.RecordListParams{
-		ZoneID: cloudflare.String(info.DomainName),
-	})
+	res, e := api.List(ApiListParams{Zone: info.DomainName})
 	if e != nil {
 		return nil, e
 	}
@@ -73,7 +64,7 @@ func (cf *DnsCloudFlare) ListAllRecords(domain string) ([]dns.Record, error) {
 			Id:      v.ID,
 			Domain:  v.Name,
 			Type:    string(v.Type),
-			Value:   v.Content.(string),
+			Value:   v.Content,
 			Enabled: true,
 		})
 	}
@@ -85,10 +76,10 @@ func (cf *DnsCloudFlare) QueryRecords(params dns.QueryRecordParams) ([]dns.Recor
 	if e != nil {
 		return nil, e
 	}
-	res, e := cf.client.DNS.Records.List(cf.ctx, cfdns.RecordListParams{
-		ZoneID: cloudflare.String(info.DomainName),
-		Type:   cloudflare.F(cfdns.RecordListParamsType(params.Type)),
-		Name:   cloudflare.String(params.Domain),
+	res, e := api.List(ApiListParams{
+		Zone: info.DomainName,
+		Type: params.Type,
+		Name: params.Domain,
 	})
 	if e != nil {
 		return nil, e
@@ -99,7 +90,7 @@ func (cf *DnsCloudFlare) QueryRecords(params dns.QueryRecordParams) ([]dns.Recor
 			Id:      v.ID,
 			Domain:  v.Name,
 			Type:    string(v.Type),
-			Value:   v.Content.(string),
+			Value:   v.Content,
 			Enabled: true,
 		})
 	}
@@ -111,13 +102,11 @@ func (cf *DnsCloudFlare) AddRecord(params dns.AddRecordParams) error {
 	if e != nil {
 		return e
 	}
-	_, e = cf.client.DNS.Records.New(cf.ctx, cfdns.RecordNewParams{
-		ZoneID: cloudflare.String(info.DomainName),
-		Record: cfdns.RecordParam{
-			Name:    cloudflare.String(info.RR),
-			Type:    cloudflare.F(cfdns.RecordType(params.Type)),
-			Content: cloudflare.Raw[any](params.Value),
-		},
+	e = api.Create(CreateParams{
+		Zone:    info.DomainName,
+		Content: params.Value,
+		Name:    params.Domain,
+		Type:    params.Type,
 	})
 	return e
 }
@@ -145,13 +134,11 @@ func (cf *DnsCloudFlare) EditRecord(params dns.EditRecordParams) error {
 		})
 	} else {
 		first := exist[0]
-		_, e = cf.client.DNS.Records.Update(cf.ctx, first.Id, cfdns.RecordUpdateParams{
-			ZoneID: cloudflare.String(info.DomainName),
-			Record: cfdns.RecordParam{
-				Name:    cloudflare.String(info.RR),
-				Type:    cloudflare.F(cfdns.RecordType(params.Type)),
-				Content: cloudflare.Raw[any](params.Value),
-			},
+		e = api.Update(UpdateParams{
+			Zone:     info.DomainName,
+			RecordID: first.Id,
+			Type:     params.Type,
+			Content:  params.Value,
 		})
 		return e
 	}
@@ -173,9 +160,7 @@ func (cf *DnsCloudFlare) DelRecord(params dns.DelRecordParams) error {
 		if e != nil {
 			return e
 		}
-		_, e = cf.client.DNS.Records.Delete(cf.ctx, v.Id, cfdns.RecordDeleteParams{
-			ZoneID: cloudflare.String(info.DomainName),
-		})
+		e = api.Delete(info.DomainName, v.Id)
 		if e != nil {
 			return e
 		}
