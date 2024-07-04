@@ -48,3 +48,8 @@ xddns set --type CNAME --domain www.myname.com --value  myname.com
 xddns update --type ipv4 --domain a.myname.com
 xddns update --type ipv6 --domain a.myname.com
 ```
+
+### 查看本机ip
+```bash
+xddns ip
+```
