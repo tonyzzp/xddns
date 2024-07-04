@@ -3,8 +3,9 @@ package main
 import (
 	"errors"
 	"log"
-	"xddns/dns"
-	"xddns/tools"
+
+	"github.com/tonyzzp/xddns/dns"
+	"github.com/tonyzzp/xddns/tools"
 
 	"github.com/urfave/cli/v2"
 )

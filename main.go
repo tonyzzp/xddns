@@ -4,10 +4,11 @@ import (
 	"log"
 	"os"
 	"strings"
-	"xddns/ali"
-	"xddns/cf"
-	"xddns/config"
-	"xddns/dns"
+
+	"github.com/tonyzzp/xddns/ali"
+	"github.com/tonyzzp/xddns/cf"
+	"github.com/tonyzzp/xddns/config"
+	"github.com/tonyzzp/xddns/dns"
 
 	"github.com/urfave/cli/v2"
 )

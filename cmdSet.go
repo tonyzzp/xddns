@@ -1,7 +1,7 @@
 package main
 
 import (
-	"xddns/dns"
+	"github.com/tonyzzp/xddns/dns"
 
 	"github.com/urfave/cli/v2"
 )

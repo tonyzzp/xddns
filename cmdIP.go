@@ -2,7 +2,8 @@ package main
 
 import (
 	"log"
-	"xddns/tools"
+
+	"github.com/tonyzzp/xddns/tools"
 
 	"github.com/urfave/cli/v2"
 )

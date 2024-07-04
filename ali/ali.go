@@ -4,8 +4,9 @@ import (
 	"errors"
 	"log"
 	"strings"
-	"xddns/config"
-	"xddns/dns"
+
+	"github.com/tonyzzp/xddns/config"
+	"github.com/tonyzzp/xddns/dns"
 
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/requests"
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/alidns"
