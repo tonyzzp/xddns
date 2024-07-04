@@ -1,3 +1,10 @@
+命令行工具，操作dns。目前支持ali/cloudflare。
+同时支持获取本机ip，然后同步到dns
+
+### 安装
+```bash
+go install github.com/tonyzzp/xddns@latest
+```
 
 ### 帮助
 
