@@ -1,3 +1,9 @@
+# xddns
+
+[![Go Reference](https://pkg.go.dev/badge/github.com/tonyzzp/xddns.svg)](https://pkg.go.dev/github.com/tonyzzp/xddns)
+
+--------------
+
 命令行工具，操作dns。目前支持ali/cloudflare。
 同时支持获取本机ip，然后同步到dns
 
