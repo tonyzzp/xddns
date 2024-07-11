@@ -159,7 +159,9 @@ func main() {
 		},
 	}
 	e := app.Run(os.Args)
-	if e != nil {
+	if e == nil {
+		log.Println("execute success")
+	} else {
 		log.Println(e)
 		os.Exit(1)
 	}

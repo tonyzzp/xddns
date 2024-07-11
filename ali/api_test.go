@@ -7,9 +7,9 @@ import (
 func TestAPI(t *testing.T) {
 	api.AccessSecretId = ""
 	api.AccessSecretKey = ""
+	api.Region = "cn-shenzhen"
 
 	res, e := api.Send(&Request{
-		Region: "cn-shenzhen",
 		Action: "DescribeDomainRecords",
 		Query: map[string]string{
 			"DomainName": "veikr.com",

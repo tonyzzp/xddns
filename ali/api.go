@@ -5,9 +5,10 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
+	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"net/url"
 	"slices"
@@ -19,20 +20,106 @@ import (
 type _API struct {
 	AccessSecretId  string
 	AccessSecretKey string
+	Region          string
 }
 
 type Request struct {
 	Method string
 	Action string
-	Region string
 	Query  map[string]string
 	Body   []byte
+	Result any
 }
 
 type Response struct {
 	HttpCode int
 	Headers  http.Header
 	Body     []byte
+}
+
+type DescribeDomainRecordsReq struct {
+	DomainName string
+	PageNumber int
+	PageSize   int
+	Type       string
+}
+
+type DescribeDomainRecordsRes struct {
+	RequestId     string
+	TotalCount    int64
+	PageSize      int
+	PageNumber    int
+	DomainRecords *DomainRecords
+}
+
+type DomainRecords struct {
+	Record []*RecordItem
+}
+
+type RecordItem struct {
+	Status          string
+	Type            string
+	TTL             int
+	RecordId        string
+	Priority        int
+	RR              string
+	DomainName      string
+	Weight          int
+	Value           string
+	CreateTimestamp int64
+	UpdateTimestamp int64
+}
+
+type AddDomainRecordReq struct {
+	DomainName string
+	RR         string
+	Type       string
+	Value      string
+	TTL        int
+	Priority   int
+}
+
+type AddDomainRecordRes struct {
+	RequestId string
+	RecordId  string
+}
+
+type DeleteDomainRecordReq struct {
+	RecordId string
+}
+
+type DeleteDomainRecordRes struct {
+	RequestId string
+	RecordId  string
+}
+
+type UpdateDomainRecordReq struct {
+	RecordId string
+	RR       string
+	Type     string
+	Value    string
+	TTL      int
+	Priority int
+}
+
+type UpdateDomainRecordRes struct {
+	RequestId string
+	RecordId  string
+}
+
+type DescribeSubDomainRecordsReq struct {
+	SubDomain  string
+	PageNumber int
+	PageSize   int
+	Type       string
+}
+
+type DescribeSubDomainRecordsRes struct {
+	RequestId     string
+	TotalCount    int64
+	PageSize      int
+	PageNumber    int
+	DomainRecords DomainRecords
 }
 
 var api = _API{}
@@ -126,7 +213,7 @@ func (a *_API) Send(req *Request) (*Response, error) {
 	headers["x-acs-version"] = "2015-01-09"
 	headers["x-acs-signature-nonce"] = nonce
 	headers["x-acs-date"] = now.UTC().Format(time.RFC3339)
-	headers["host"] = fmt.Sprintf("alidns.%s.aliyuncs.com", req.Region)
+	headers["host"] = fmt.Sprintf("alidns.%s.aliyuncs.com", a.Region)
 	headers["x-acs-content-sha256"] = bodyHash
 	headers["content-type"] = "applicaton/json"
 
@@ -138,8 +225,7 @@ func (a *_API) Send(req *Request) (*Response, error) {
 
 	headers["Authorization"] = auth
 
-	var u = fmt.Sprintf("https://alidns.%s.aliyuncs.com/?%s", req.Region, queryString)
-	log.Println(u)
+	var u = fmt.Sprintf("https://alidns.%s.aliyuncs.com/?%s", a.Region, queryString)
 	r, e := http.NewRequest(req.Method, u, bytes.NewReader(req.Body))
 	if e != nil {
 		return nil, e
@@ -161,5 +247,111 @@ func (a *_API) Send(req *Request) (*Response, error) {
 		return res, e
 	}
 	res.Body = bs
+	if hres.StatusCode != 200 {
+		return nil, errors.New(string(bs))
+	}
+	if req.Result != nil {
+		e = json.Unmarshal(res.Body, &req.Result)
+		if e != nil {
+			return nil, e
+		}
+	}
 	return res, nil
+}
+
+func (a *_API) List(req DescribeDomainRecordsReq) (*DescribeDomainRecordsRes, error) {
+	if req.PageNumber == 0 {
+		req.PageNumber = 1
+	}
+	if req.PageSize == 0 {
+		req.PageSize = 50
+	}
+	var rtn = &DescribeDomainRecordsRes{}
+	_, e := a.Send(&Request{
+		Action: "DescribeDomainRecords",
+		Query: map[string]string{
+			"DomainName": req.DomainName,
+			"PageNumber": strconv.Itoa(req.PageNumber),
+			"PageSize":   strconv.Itoa(req.PageSize),
+			"Type":       req.Type,
+		},
+		Result: rtn,
+	})
+	return rtn, e
+}
+
+func (a *_API) ListSub(req DescribeSubDomainRecordsReq) (*DescribeSubDomainRecordsRes, error) {
+	if req.PageNumber == 0 {
+		req.PageNumber = 1
+	}
+	if req.PageSize == 0 {
+		req.PageSize = 50
+	}
+	var rtn = &DescribeSubDomainRecordsRes{}
+	_, e := a.Send(&Request{
+		Action: "DescribeSubDomainRecords",
+		Query: map[string]string{
+			"SubDomain":  req.SubDomain,
+			"PageNumber": strconv.Itoa(req.PageNumber),
+			"PageSize":   strconv.Itoa(req.PageSize),
+			"Type":       req.Type,
+		},
+		Result: rtn,
+	})
+	return rtn, e
+}
+
+func (a *_API) Add(req AddDomainRecordReq) (*AddDomainRecordRes, error) {
+	if req.TTL <= 0 {
+		req.TTL = 600
+	}
+	if req.Priority == 0 {
+		req.Priority = 1
+	}
+	var rtn = &AddDomainRecordRes{}
+	_, e := a.Send(&Request{
+		Action: "AddDomainRecord",
+		Query: map[string]string{
+			"DomainName": req.DomainName,
+			"RR":         req.RR,
+			"Type":       req.Type,
+			"Value":      req.Value,
+			"TTL":        strconv.Itoa(req.TTL),
+			"Priority":   strconv.Itoa(req.Priority),
+		},
+		Result: rtn,
+	})
+	return rtn, e
+}
+
+func (a *_API) Update(req UpdateDomainRecordReq) (*UpdateDomainRecordRes, error) {
+	if req.TTL <= 0 {
+		req.TTL = 600
+	}
+	var rtn = &UpdateDomainRecordRes{}
+	_, e := a.Send(&Request{
+		Action: "UpdateDomainRecord",
+		Query: map[string]string{
+			"RecordId": req.RecordId,
+			"RR":       req.RR,
+			"Type":     req.Type,
+			"Value":    req.Value,
+			"TTL":      strconv.Itoa(req.TTL),
+			"Priority": strconv.Itoa(req.Priority),
+		},
+		Result: rtn,
+	})
+	return rtn, e
+}
+
+func (a *_API) Del(req DeleteDomainRecordReq) (*DeleteDomainRecordRes, error) {
+	var rtn = &DeleteDomainRecordRes{}
+	_, e := a.Send(&Request{
+		Action: "DeleteDomainRecord",
+		Query: map[string]string{
+			"RecordId": req.RecordId,
+		},
+		Result: rtn,
+	})
+	return rtn, e
 }
