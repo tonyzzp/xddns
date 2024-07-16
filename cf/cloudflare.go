@@ -99,6 +99,7 @@ func (cf *DnsCloudFlare) QueryRecords(params dns.QueryRecordParams) ([]dns.Recor
 }
 
 func (cf *DnsCloudFlare) AddRecord(params dns.AddRecordParams) error {
+	log.Println("cf.AddRecord", params)
 	info, e := cf.resolve(params.Domain)
 	if e != nil {
 		return e

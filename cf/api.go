@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -170,6 +171,7 @@ func (api *_API) Create(params CreateParams) error {
 }
 
 func (api *_API) Update(params UpdateParams) error {
+	log.Println("cf.Update", params)
 	var u = fmt.Sprintf("/zones/%s/dns_records/%s", params.Zone, params.RecordID)
 	var m = make(map[string]any)
 	e := api.post(u, http.MethodPatch, params, &m)

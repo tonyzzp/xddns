@@ -67,20 +67,10 @@ func GetExternalIpv6() (string, error) {
 		if e != nil {
 			continue
 		}
-		log.Println("------------------------------")
-		log.Println("interface", inter.Name, inter.HardwareAddr)
 		for _, addr := range addrs {
 			switch v := addr.(type) {
 			case *net.IPNet:
 				{
-					ones, _ := v.Mask.Size()
-					log.Println(
-						"ip", v.IP,
-						"IsGlobalUnicast", v.IP.IsGlobalUnicast(),
-						"IsPrivate", v.IP.IsPrivate(),
-						"IsLinkLocalUnicast", v.IP.IsLinkLocalUnicast(),
-						"mask", ones,
-					)
 					if v.IP.To4() == nil && v.IP.IsGlobalUnicast() && !v.IP.IsPrivate() {
 						ips = append(ips, v)
 					}
