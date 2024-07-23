@@ -10,7 +10,7 @@ var flagDomain = &cli.StringFlag{
 
 var flagRecordType = &cli.StringFlag{
 	Name:     "type",
-	Required: true,
+	Required: false,
 	Usage:    "A, AAAA, CNAME, TXT",
 }
 

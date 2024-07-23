@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/tonyzzp/xddns/dns"
@@ -12,6 +13,9 @@ func cmdSetAction(ctx *cli.Context) error {
 	domain := flagDomain.Get(ctx)
 	t := flagRecordType.Get(ctx)
 	value := flagValue.Get(ctx)
+	if t == "" {
+		return errors.New("need param --type")
+	}
 	fmt.Println("actionSet", domain, t, value)
 	return obtainClient(domain).EditRecord(dns.EditRecordParams{
 		Domain: domain,
