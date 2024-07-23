@@ -67,6 +67,7 @@ func (cf *DnsCloudFlare) ListAllRecords(domain string) ([]dns.Record, error) {
 			Type:    string(v.Type),
 			Value:   v.Content,
 			Enabled: true,
+			Proxied: v.Proxied,
 		})
 	}
 	return rtn, nil
@@ -93,6 +94,7 @@ func (cf *DnsCloudFlare) QueryRecords(params dns.QueryRecordParams) ([]dns.Recor
 			Type:    string(v.Type),
 			Value:   v.Content,
 			Enabled: true,
+			Proxied: v.Proxied,
 		})
 	}
 	return rtn, nil

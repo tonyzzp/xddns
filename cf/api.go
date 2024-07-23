@@ -46,6 +46,7 @@ type Record struct {
 	Type    string
 	ID      string
 	TTL     int
+	Proxied bool
 }
 
 type CreateParams struct {

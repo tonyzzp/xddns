@@ -14,14 +14,18 @@ func cmdDumpAction(ctx *cli.Context) error {
 		return e
 	}
 	fmt.Println("totalcount", len(resp))
-	fmt.Printf("%50s %7s %50s\n", "domain", "type", "value")
-	fmt.Println(strings.Repeat("-", 50+7+50+2))
+	fmt.Printf("%50s %7s %7s %50s\n", "domain", "type", "proxied", "value")
+	fmt.Println(strings.Repeat("-", 50+7+50+3))
 	for _, record := range resp {
 		value := record.Value
 		if len(value) > 40 {
 			value = value[:40]
 		}
-		fmt.Printf("%50s %7s %50s\n", record.Domain, record.Type, value)
+		var proxied = ""
+		if record.Proxied {
+			proxied = "proxied"
+		}
+		fmt.Printf("%50s %7s %7s %50s\n", record.Domain, record.Type, proxied, value)
 	}
 	return nil
 }
