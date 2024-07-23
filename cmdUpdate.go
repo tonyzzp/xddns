@@ -2,7 +2,7 @@ package main
 
 import (
 	"errors"
-	"log"
+	"fmt"
 
 	"github.com/tonyzzp/xddns/dns"
 	"github.com/tonyzzp/xddns/tools"
@@ -27,7 +27,7 @@ func cmdUpdateAction(ctx *cli.Context) error {
 	if ip == "" {
 		return errors.New("无法获取ip")
 	}
-	log.Println("updateAction", domain, ipType, ip)
+	fmt.Println("updateAction", domain, ipType, ip)
 	var recordType = ""
 	if ipType == "ipv4" {
 		recordType = dns.RECORD_TYPE_A

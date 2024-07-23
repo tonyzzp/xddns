@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -15,27 +16,27 @@ import (
 
 func testCloudFlare(ctx *cli.Context) error {
 	c := cf.New()
-	log.Println(c.ListMainDomains())
-	log.Println(c.QueryRecords(dns.QueryRecordParams{Domain: "izzp.me"}))
-	log.Println(c.QueryRecords(dns.QueryRecordParams{Domain: "www.izzp.me"}))
-	log.Println(c.ListAllRecords("izzp.me"))
+	fmt.Println(c.ListMainDomains())
+	fmt.Println(c.QueryRecords(dns.QueryRecordParams{Domain: "izzp.me"}))
+	fmt.Println(c.QueryRecords(dns.QueryRecordParams{Domain: "www.izzp.me"}))
+	fmt.Println(c.ListAllRecords("izzp.me"))
 
-	log.Println("增加")
-	log.Println(c.AddRecord(dns.AddRecordParams{
+	fmt.Println("增加")
+	fmt.Println(c.AddRecord(dns.AddRecordParams{
 		Domain: "test.izzp.me",
 		Type:   "A",
 		Value:  "1.1.1.4",
 	}))
 
-	// log.Println("edit")
-	// log.Println(c.EditRecord(dns.EditRecordParams{
+	// fmt.Println("edit")
+	// fmt.Println(c.EditRecord(dns.EditRecordParams{
 	// 	Domain: "test.izzp.me",
 	// 	Type:   "A",
 	// 	Value:  "1.2.3.4",
 	// }))
 
-	log.Println("delete")
-	log.Println(c.DelRecord(dns.DelRecordParams{
+	fmt.Println("delete")
+	fmt.Println(c.DelRecord(dns.DelRecordParams{
 		Domain: "test.izzp.me",
 		Type:   "A",
 	}))
@@ -46,48 +47,48 @@ func testAli(ctx *cli.Context) error {
 
 	c := ali.New()
 	{
-		log.Println("mainDomains")
+		fmt.Println("mainDomains")
 		list, e := c.ListMainDomains()
-		log.Println(e)
+		fmt.Println(e)
 		for _, v := range list {
-			log.Println(v)
+			fmt.Println(v)
 		}
 	}
 
 	{
-		log.Println("listAll")
+		fmt.Println("listAll")
 		list, e := c.ListAllRecords("veikr.com")
-		log.Println(e)
+		fmt.Println(e)
 		for _, v := range list {
-			log.Println(v)
+			fmt.Println(v)
 		}
 	}
 
 	{
-		log.Println("find")
+		fmt.Println("find")
 		list, e := c.QueryRecords(dns.QueryRecordParams{Domain: "veikr.com"})
-		log.Println(e)
+		fmt.Println(e)
 		for _, v := range list {
-			log.Println(v)
+			fmt.Println(v)
 		}
 	}
 
 	{
-		log.Println("edit")
+		fmt.Println("edit")
 		e := c.EditRecord(dns.EditRecordParams{Domain: "test.veikr.com", Type: "CNAME", Value: "www.veikr.com"})
-		log.Println(e)
+		fmt.Println(e)
 	}
 
 	{
-		log.Println("add")
+		fmt.Println("add")
 		e := c.AddRecord(dns.AddRecordParams{Domain: "test.veikr.com", Type: "CNAME", Value: "veikr.com"})
-		log.Println(e)
+		fmt.Println(e)
 	}
 
 	{
-		log.Println("del")
+		fmt.Println("del")
 		e := c.DelRecord(dns.DelRecordParams{Domain: "test.veikr.com"})
-		log.Println(e)
+		fmt.Println(e)
 	}
 
 	return nil
@@ -127,7 +128,8 @@ func obtainClient(fullDomain string) dns.IDns {
 }
 
 func main() {
-	log.SetOutput(os.Stdout)
+	logFile, _ := os.OpenFile("xddns.log", os.O_WRONLY|os.O_CREATE, os.ModePerm)
+	log.SetOutput(logFile)
 	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
 	app := &cli.App{
 		Usage: "操作阿里dns解析记录",
@@ -160,9 +162,9 @@ func main() {
 	}
 	e := app.Run(os.Args)
 	if e == nil {
-		log.Println("execute success")
+		fmt.Println("execute success")
 	} else {
-		log.Println(e)
+		fmt.Println(e)
 		os.Exit(1)
 	}
 }

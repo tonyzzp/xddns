@@ -1,7 +1,8 @@
 package main
 
 import (
-	"log"
+	"fmt"
+	"strings"
 
 	"github.com/urfave/cli/v2"
 )
@@ -12,13 +13,15 @@ func cmdDumpAction(ctx *cli.Context) error {
 	if e != nil {
 		return e
 	}
-	log.Println("totalcount", len(resp))
+	fmt.Println("totalcount", len(resp))
+	fmt.Printf("%50s %7s %50s\n", "domain", "type", "value")
+	fmt.Println(strings.Repeat("-", 50+7+50+2))
 	for _, record := range resp {
 		value := record.Value
 		if len(value) > 40 {
 			value = value[:40]
 		}
-		log.Printf("%50s %7s %50s", record.Domain, record.Type, value)
+		fmt.Printf("%50s %7s %50s\n", record.Domain, record.Type, value)
 	}
 	return nil
 }
