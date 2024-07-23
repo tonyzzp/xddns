@@ -51,6 +51,7 @@ func (cf *DnsCloudFlare) ListMainDomains() ([]string, error) {
 }
 
 func (cf *DnsCloudFlare) ListAllRecords(domain string) ([]dns.Record, error) {
+	log.Println("cf.ListAllRecords", domain)
 	info, e := cf.resolve(domain)
 	if e != nil {
 		return nil, e
@@ -74,6 +75,7 @@ func (cf *DnsCloudFlare) ListAllRecords(domain string) ([]dns.Record, error) {
 }
 
 func (cf *DnsCloudFlare) QueryRecords(params dns.QueryRecordParams) ([]dns.Record, error) {
+	log.Println("cf.QueryRecords", params)
 	info, e := cf.resolve(params.Domain)
 	if e != nil {
 		return nil, e
@@ -149,6 +151,7 @@ func (cf *DnsCloudFlare) EditRecord(params dns.EditRecordParams) error {
 }
 
 func (cf *DnsCloudFlare) DelRecord(params dns.DelRecordParams) error {
+	log.Println("cf.DelRecord", params)
 	exist, e := cf.QueryRecords(dns.QueryRecordParams{
 		Domain: params.Domain,
 		Type:   params.Type,

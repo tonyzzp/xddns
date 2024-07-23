@@ -9,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
 	"slices"
@@ -205,6 +206,8 @@ func (a *_API) Send(req *Request) (*Response, error) {
 
 	var queryString = buildQueryString(req.Query)
 	var bodyHash = hash(req.Body)
+	var u = fmt.Sprintf("https://alidns.%s.aliyuncs.com/?%s", a.Region, queryString)
+	log.Println("ali.send", u)
 	var headers = map[string]string{}
 
 	var now = time.Now()
@@ -216,6 +219,7 @@ func (a *_API) Send(req *Request) (*Response, error) {
 	headers["host"] = fmt.Sprintf("alidns.%s.aliyuncs.com", a.Region)
 	headers["x-acs-content-sha256"] = bodyHash
 	headers["content-type"] = "applicaton/json"
+	log.Println("headers", headers)
 
 	var canonicalHeaders = buildCanonicalHeaders(headers)
 	var signedHeaders = buildCanonicalSignedHeaders(headers)
@@ -223,11 +227,18 @@ func (a *_API) Send(req *Request) (*Response, error) {
 	var signature = buildSignature(a.AccessSecretKey, canonicalRequest)
 	var auth = buildAuth(a.AccessSecretId, signedHeaders, signature)
 
+	log.Println("signing----------")
+	log.Println("canonicalHeaders", canonicalHeaders)
+	log.Println("signedHeaders", signedHeaders)
+	log.Println("canonicalRequest", canonicalRequest)
+	log.Println("signature", signature)
+	log.Println("auth", auth)
+
 	headers["Authorization"] = auth
 
-	var u = fmt.Sprintf("https://alidns.%s.aliyuncs.com/?%s", a.Region, queryString)
 	r, e := http.NewRequest(req.Method, u, bytes.NewReader(req.Body))
 	if e != nil {
+		log.Println(e)
 		return nil, e
 	}
 
@@ -236,6 +247,7 @@ func (a *_API) Send(req *Request) (*Response, error) {
 	}
 	hres, e := http.DefaultClient.Do(r)
 	if e != nil {
+		log.Println(e)
 		return nil, e
 	}
 
@@ -244,9 +256,12 @@ func (a *_API) Send(req *Request) (*Response, error) {
 	res.Headers = hres.Header
 	bs, e := io.ReadAll(hres.Body)
 	if e != nil {
+		log.Println(e)
 		return res, e
 	}
 	res.Body = bs
+	log.Println(hres.StatusCode, hres.Status)
+	log.Println(string(bs))
 	if hres.StatusCode != 200 {
 		return nil, errors.New(string(bs))
 	}

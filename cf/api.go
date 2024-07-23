@@ -83,15 +83,20 @@ func (api *_API) get(p string, params map[string]string, result any) error {
 	req.Method = http.MethodGet
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "Bearer "+api.Token)
+	log.Println("cloudflare.get", requestUrl)
 	resp, e := http.DefaultClient.Do(req)
 	if e != nil {
+		log.Println(e)
 		return e
 	}
 	data, e := io.ReadAll(resp.Body)
 	if e != nil {
+		log.Println(e)
 		return e
 	}
 
+	log.Println(resp.StatusCode, resp.Status)
+	log.Println(string(data))
 	if resp.StatusCode != 200 {
 		return errors.New(string(data))
 	}
@@ -119,15 +124,20 @@ func (api *_API) post(p string, method string, body any, result any) error {
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "Bearer "+api.Token)
+	log.Println("cloudflare.post", url)
 	resp, e := http.DefaultClient.Do(req)
 	if e != nil {
+		log.Println(e)
 		return e
 	}
 	data, e = io.ReadAll(resp.Body)
 	if e != nil {
+		log.Println(e)
 		return e
 	}
 
+	log.Println(resp.StatusCode, resp.Status)
+	log.Println(string(data))
 	if resp.StatusCode != 200 {
 		return errors.New(string(data))
 	}
