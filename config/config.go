@@ -9,15 +9,13 @@ import (
 )
 
 type ConfigAli struct {
-	Region    string   `yaml:"region"`
-	KeyId     string   `yaml:"key_id"`
-	KeySecret string   `yaml:"key_secret"`
-	Domains   []string `yaml:"domains"`
+	Region    string `yaml:"region"`
+	KeyId     string `yaml:"key_id"`
+	KeySecret string `yaml:"key_secret"`
 }
 
 type ConfigCloudFlare struct {
-	Token   string            `yaml:"token"`
-	Domains map[string]string `yaml:"domains"`
+	Token string `yaml:"token"`
 }
 
 type AppConfig struct {

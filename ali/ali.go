@@ -22,26 +22,41 @@ func New() *DnsAli {
 	return rtn
 }
 
-func (da *DnsAli) resolve(domain string) (dns.DomainResolved, error) {
-	for _, d := range da.cfg.Domains {
-		if strings.HasSuffix(domain, d) {
-			rr := strings.TrimSuffix(domain, d)
+func (da *DnsAli) resolve(domain string) (*dns.DomainResolved, error) {
+	all, e := da.ListMainDomains()
+	if e != nil {
+		return nil, e
+	}
+	for _, d := range all {
+		if strings.HasSuffix(domain, d.Name) {
+			rr := strings.TrimSuffix(domain, d.Name)
 			if strings.HasSuffix(rr, ".") {
 				rr = rr[0 : len(rr)-1]
 			} else if rr == "" {
 				rr = "@"
 			}
-			return dns.DomainResolved{
-				DomainName: d,
+			return &dns.DomainResolved{
+				DomainName: d.Name,
 				RR:         rr,
 			}, nil
 		}
 	}
-	return dns.DomainResolved{}, errors.New("not exist")
+	return nil, errors.New("not exist")
 }
 
-func (da *DnsAli) ListMainDomains() ([]string, error) {
-	return append([]string{}, da.cfg.Domains...), nil
+func (da *DnsAli) ListMainDomains() ([]dns.Domain, error) {
+	all, e := api.ListMainDomains()
+	if e != nil {
+		return nil, e
+	}
+	rtn := make([]dns.Domain, 0)
+	for _, v := range all {
+		rtn = append(rtn, dns.Domain{
+			Name: v,
+			Id:   "",
+		})
+	}
+	return rtn, nil
 }
 
 func (da *DnsAli) ListAllRecords(mainDomain string) ([]dns.Record, error) {

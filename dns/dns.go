@@ -49,8 +49,13 @@ type EditRecordParams struct {
 	Value  string
 }
 
+type Domain struct {
+	Name string
+	Id   string
+}
+
 type IDns interface {
-	ListMainDomains() ([]string, error)
+	ListMainDomains() ([]Domain, error)
 	ListAllRecords(domain string) ([]Record, error)
 	QueryRecords(params QueryRecordParams) ([]Record, error)
 	AddRecord(params AddRecordParams) error

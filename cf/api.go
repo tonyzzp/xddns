@@ -68,6 +68,17 @@ type UpdateParams struct {
 	TTL      int    `json:"ttl"`
 }
 
+type Zone struct {
+	Id   string
+	Name string
+}
+
+type ZonesRes struct {
+	Success    bool
+	ResultInfo ResultInfo `json:"result_info"`
+	Result     []Zone
+}
+
 func (api *_API) get(p string, params map[string]string, result any) error {
 	var requestUrl = fmt.Sprintf("%s%s", _CF_API, p)
 	if len(params) > 0 {
@@ -143,6 +154,12 @@ func (api *_API) post(p string, method string, body any, result any) error {
 	}
 	e = json.Unmarshal(data, result)
 	return e
+}
+
+func (api *_API) ListZones() (*ZonesRes, error) {
+	rtn := &ZonesRes{}
+	var e = api.get("/zones", nil, rtn)
+	return rtn, e
 }
 
 func (api *_API) List(params ApiListParams) (*ApiListRes, error) {

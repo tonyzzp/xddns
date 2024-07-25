@@ -94,37 +94,39 @@ func testAli(ctx *cli.Context) error {
 	return nil
 }
 
-func findDnsServer(fullDomain string) string {
-	for _, v := range config.Config.Ali.Domains {
-		if strings.HasSuffix(fullDomain, v) {
-			return "ali"
+func findDnsServer(fullDomain string) dns.IDns {
+	all, e := _cloudflareClient.ListMainDomains()
+	if e != nil {
+		return nil
+	}
+	for _, v := range all {
+		if strings.HasSuffix(fullDomain, v.Name) {
+			return _cloudflareClient
 		}
 	}
-	for v, _ := range config.Config.CloudFlare.Domains {
-		if strings.HasSuffix(fullDomain, v) {
-			return "cloudflare"
+	all, e = _aliClient.ListMainDomains()
+	if e != nil {
+		return nil
+	}
+	for _, v := range all {
+		if strings.HasSuffix(fullDomain, v.Name) {
+			return _aliClient
 		}
 	}
-	return ""
+	return nil
 }
 
 var _aliClient dns.IDns
 var _cloudflareClient dns.IDns
 
 func obtainClient(fullDomain string) dns.IDns {
-	var server = findDnsServer(fullDomain)
-	if server == "ali" {
-		if _aliClient == nil {
-			_aliClient = ali.New()
-		}
-		return _aliClient
-	} else if server == "cloudflare" {
-		if _cloudflareClient == nil {
-			_cloudflareClient = cf.New()
-		}
-		return _cloudflareClient
+	if _aliClient == nil {
+		_aliClient = ali.New()
 	}
-	return nil
+	if _cloudflareClient == nil {
+		_cloudflareClient = cf.New()
+	}
+	return findDnsServer(fullDomain)
 }
 
 func main() {

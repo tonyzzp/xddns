@@ -24,28 +24,45 @@ func New() *DnsCloudFlare {
 }
 
 func (cf *DnsCloudFlare) resolve(domain string) (*dns.DomainResolved, error) {
-	for v, zone := range cf.cfg.Domains {
-		if strings.HasSuffix(domain, v) {
-			rr := strings.TrimSuffix(domain, v)
+	all, e := cf.ListMainDomains()
+	if e != nil {
+		return nil, e
+	}
+	for _, v := range all {
+		if strings.HasSuffix(domain, v.Name) {
+			rr := strings.TrimSuffix(domain, v.Name)
 			if strings.HasSuffix(rr, ".") {
 				rr = rr[0 : len(rr)-1]
 			} else if rr == "" {
 				rr = "@"
 			}
 			info := &dns.DomainResolved{
-				DomainName: zone,
+				DomainName: v.Id,
 				RR:         rr,
 			}
 			return info, nil
+
 		}
 	}
 	return nil, errors.New("not exists")
 }
 
-func (cf *DnsCloudFlare) ListMainDomains() ([]string, error) {
-	rtn := make([]string, 0)
-	for k := range cf.cfg.Domains {
-		rtn = append(rtn, k)
+func (cf *DnsCloudFlare) ListMainDomains() ([]dns.Domain, error) {
+	rtn := make([]dns.Domain, 0)
+	for {
+		res, e := api.ListZones()
+		if e != nil {
+			return nil, e
+		}
+		for _, v := range res.Result {
+			rtn = append(rtn, dns.Domain{
+				Name: v.Name,
+				Id:   v.Id,
+			})
+		}
+		if len(rtn) >= res.ResultInfo.Count {
+			break
+		}
 	}
 	return rtn, nil
 }

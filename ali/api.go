@@ -123,6 +123,19 @@ type DescribeSubDomainRecordsRes struct {
 	DomainRecords DomainRecords
 }
 
+type DescribeDomainsRes struct {
+	RequestId  string
+	TotalCount int64
+	PageSize   int64
+	PageNumber int64
+	Domains    struct {
+		Domain []struct {
+			DomainName string
+			DomainId   string
+		}
+	}
+}
+
 var api = _API{}
 
 func buildQueryString(m map[string]string) string {
@@ -272,6 +285,25 @@ func (a *_API) Send(req *Request) (*Response, error) {
 		}
 	}
 	return res, nil
+}
+
+func (a *_API) ListMainDomains() ([]string, error) {
+	domains := &DescribeDomainsRes{}
+	_, e := a.Send(&Request{
+		Action: "DescribeDomains",
+		Query: map[string]string{
+			"PageSize": "100",
+		},
+		Result: domains,
+	})
+	if e != nil {
+		return nil, e
+	}
+	rtn := make([]string, 0)
+	for _, v := range domains.Domains.Domain {
+		rtn = append(rtn, v.DomainName)
+	}
+	return rtn, nil
 }
 
 func (a *_API) List(req DescribeDomainRecordsReq) (*DescribeDomainRecordsRes, error) {
