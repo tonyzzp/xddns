@@ -287,7 +287,7 @@ func (a *_API) Send(req *Request) (*Response, error) {
 	return res, nil
 }
 
-func (a *_API) ListMainDomains() ([]string, error) {
+func (a *_API) ListMainDomains() (*DescribeDomainsRes, error) {
 	domains := &DescribeDomainsRes{}
 	_, e := a.Send(&Request{
 		Action: "DescribeDomains",
@@ -296,14 +296,7 @@ func (a *_API) ListMainDomains() ([]string, error) {
 		},
 		Result: domains,
 	})
-	if e != nil {
-		return nil, e
-	}
-	rtn := make([]string, 0)
-	for _, v := range domains.Domains.Domain {
-		rtn = append(rtn, v.DomainName)
-	}
-	return rtn, nil
+	return domains, e
 }
 
 func (a *_API) List(req DescribeDomainRecordsReq) (*DescribeDomainRecordsRes, error) {

@@ -49,16 +49,21 @@ func (da *DnsAli) ListMainDomains() ([]dns.Domain, error) {
 	if da.domains != nil {
 		return da.domains, nil
 	}
-	all, e := api.ListMainDomains()
-	if e != nil {
-		return nil, e
-	}
 	rtn := make([]dns.Domain, 0)
-	for _, v := range all {
-		rtn = append(rtn, dns.Domain{
-			Name: v,
-			Id:   "",
-		})
+	for {
+		res, e := api.ListMainDomains()
+		if e != nil {
+			return nil, e
+		}
+		for _, v := range res.Domains.Domain {
+			rtn = append(rtn, dns.Domain{
+				Name: v.DomainName,
+				Id:   v.DomainId,
+			})
+		}
+		if len(rtn) >= int(res.TotalCount) {
+			break
+		}
 	}
 	da.domains = rtn
 	return rtn, nil
