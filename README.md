@@ -22,20 +22,18 @@ xddns --help set
 ### 配置文件
 
 配置文件`xddns-config.yaml` (**搜索路径顺序:workingdir,exedir**)，内容如下
+
+- ali: 需要dns的读写权限 (系统配置策略 AliyunDNSFullAccess)
+- cloudfalre: 需要读取zones列表和修改相应zone dns记录的权限 (zone.zone,  zone.dns)
+
 ```yaml
 ali:
   region: cn-shenzhen
   key_id: xxxxx
   key_secret: xxxxx
-  domains:
-    - a.com
-    - b.com
 
 cloudflare:
-  token: "xxxxx"
-  domains:
-    "a.me": "xxxxxxx zoneid"
-    "b.app": "xxxx zoneid"
+  token: xxxxx
 ```
 
 ### 通过命令行参数指定配置文件
