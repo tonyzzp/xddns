@@ -11,8 +11,9 @@ import (
 )
 
 type DnsCloudFlare struct {
-	ctx context.Context
-	cfg config.ConfigCloudFlare
+	ctx     context.Context
+	cfg     config.ConfigCloudFlare
+	domains []dns.Domain
 }
 
 func New() *DnsCloudFlare {
@@ -48,6 +49,9 @@ func (cf *DnsCloudFlare) resolve(domain string) (*dns.DomainResolved, error) {
 }
 
 func (cf *DnsCloudFlare) ListMainDomains() ([]dns.Domain, error) {
+	if cf.domains != nil {
+		return cf.domains, nil
+	}
 	rtn := make([]dns.Domain, 0)
 	for {
 		res, e := api.ListZones()
@@ -64,6 +68,7 @@ func (cf *DnsCloudFlare) ListMainDomains() ([]dns.Domain, error) {
 			break
 		}
 	}
+	cf.domains = rtn
 	return rtn, nil
 }
 

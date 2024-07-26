@@ -9,7 +9,8 @@ import (
 )
 
 type DnsAli struct {
-	cfg config.ConfigAli
+	cfg     config.ConfigAli
+	domains []dns.Domain
 }
 
 func New() *DnsAli {
@@ -45,6 +46,9 @@ func (da *DnsAli) resolve(domain string) (*dns.DomainResolved, error) {
 }
 
 func (da *DnsAli) ListMainDomains() ([]dns.Domain, error) {
+	if da.domains != nil {
+		return da.domains, nil
+	}
 	all, e := api.ListMainDomains()
 	if e != nil {
 		return nil, e
@@ -56,6 +60,7 @@ func (da *DnsAli) ListMainDomains() ([]dns.Domain, error) {
 			Id:   "",
 		})
 	}
+	da.domains = rtn
 	return rtn, nil
 }
 

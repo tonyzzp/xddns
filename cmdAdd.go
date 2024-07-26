@@ -28,7 +28,11 @@ func actionAdd(ctx *cli.Context) error {
 		return errors.New("need param --type")
 	}
 	fmt.Println("actionAdd", domain, t, value)
-	return obtainClient(domain).AddRecord(dns.AddRecordParams{
+	client, e := obtainClient(domain)
+	if e != nil {
+		return e
+	}
+	return client.AddRecord(dns.AddRecordParams{
 		Domain: domain,
 		Type:   t,
 		Value:  value,

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -94,39 +95,31 @@ func testAli(ctx *cli.Context) error {
 	return nil
 }
 
-func findDnsServer(fullDomain string) dns.IDns {
-	all, e := _cloudflareClient.ListMainDomains()
-	if e != nil {
-		return nil
-	}
-	for _, v := range all {
-		if strings.HasSuffix(fullDomain, v.Name) {
-			return _cloudflareClient
-		}
-	}
-	all, e = _aliClient.ListMainDomains()
-	if e != nil {
-		return nil
-	}
-	for _, v := range all {
-		if strings.HasSuffix(fullDomain, v.Name) {
-			return _aliClient
-		}
-	}
-	return nil
-}
-
 var _aliClient dns.IDns
 var _cloudflareClient dns.IDns
 
-func obtainClient(fullDomain string) dns.IDns {
-	if _aliClient == nil {
+func obtainClient(fullDomain string) (dns.IDns, error) {
+	if _aliClient == nil && config.Config.Ali.KeyId != "" {
 		_aliClient = ali.New()
 	}
-	if _cloudflareClient == nil {
+	if _cloudflareClient == nil && config.Config.CloudFlare.Token != "" {
 		_cloudflareClient = cf.New()
 	}
-	return findDnsServer(fullDomain)
+	var clients = []dns.IDns{_cloudflareClient, _aliClient}
+	for _, client := range clients {
+		if client != nil {
+			all, e := client.ListMainDomains()
+			if e != nil {
+				return nil, e
+			}
+			for _, v := range all {
+				if strings.HasSuffix(fullDomain, v.Name) {
+					return client, nil
+				}
+			}
+		}
+	}
+	return nil, errors.New("找不到域名")
 }
 
 func main() {

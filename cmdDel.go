@@ -12,7 +12,11 @@ func cmdDelAction(ctx *cli.Context) error {
 	domain := flagDomain.Get(ctx)
 	t := flagRecordType.Get(ctx)
 	fmt.Println("delAction", domain, t)
-	return obtainClient(domain).DelRecord(dns.DelRecordParams{
+	client, e := obtainClient(domain)
+	if e != nil {
+		return e
+	}
+	return client.DelRecord(dns.DelRecordParams{
 		Domain: domain,
 		Type:   t,
 	})

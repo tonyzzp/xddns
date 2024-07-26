@@ -34,7 +34,11 @@ func cmdUpdateAction(ctx *cli.Context) error {
 	} else {
 		recordType = dns.RECORD_TYPE_AAAA
 	}
-	return obtainClient(domain).EditRecord(dns.EditRecordParams{
+	client, e := obtainClient(domain)
+	if e != nil {
+		return e
+	}
+	return client.EditRecord(dns.EditRecordParams{
 		Domain: domain,
 		Type:   recordType,
 		Value:  ip,

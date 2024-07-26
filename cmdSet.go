@@ -17,7 +17,11 @@ func cmdSetAction(ctx *cli.Context) error {
 		return errors.New("need param --type")
 	}
 	fmt.Println("actionSet", domain, t, value)
-	return obtainClient(domain).EditRecord(dns.EditRecordParams{
+	client, e := obtainClient(domain)
+	if e != nil {
+		return e
+	}
+	return client.EditRecord(dns.EditRecordParams{
 		Domain: domain,
 		Type:   t,
 		Value:  value,

@@ -18,12 +18,12 @@ type ConfigCloudFlare struct {
 	Token string `yaml:"token"`
 }
 
-type AppConfig struct {
+type appConfig struct {
 	Ali        ConfigAli        `yaml:"ali"`
 	CloudFlare ConfigCloudFlare `yaml:"cloudflare"`
 }
 
-var Config *AppConfig
+var Config *appConfig
 
 func findConfigFile(file string) string {
 	if file != "" {
@@ -48,7 +48,7 @@ func findConfigFile(file string) string {
 
 func Init(file string) error {
 	file = findConfigFile(file)
-	Config = &AppConfig{}
+	Config = &appConfig{}
 	r, e := os.OpenFile(file, os.O_RDONLY, os.ModePerm)
 	if e != nil {
 		return e

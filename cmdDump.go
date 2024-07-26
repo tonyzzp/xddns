@@ -9,7 +9,11 @@ import (
 
 func cmdDumpAction(ctx *cli.Context) error {
 	domain := flagDomain.Get(ctx)
-	resp, e := obtainClient(domain).ListAllRecords(domain)
+	client, e := obtainClient(domain)
+	if e != nil {
+		return e
+	}
+	resp, e := client.ListAllRecords(domain)
 	if e != nil {
 		return e
 	}
