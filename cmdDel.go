@@ -9,10 +9,11 @@ import (
 )
 
 func cmdDelAction(ctx *cli.Context) error {
+	register := flagRegister.Get(ctx)
 	domain := flagDomain.Get(ctx)
 	t := flagRecordType.Get(ctx)
 	fmt.Println("delAction", domain, t)
-	client, e := obtainClient(domain)
+	client, e := obtainClient(register, domain)
 	if e != nil {
 		return e
 	}
@@ -28,6 +29,7 @@ var cmdDel = &cli.Command{
 	Flags: []cli.Flag{
 		flagDomain,
 		flagRecordType,
+		flagRegister,
 	},
 	Action: cmdDelAction,
 }

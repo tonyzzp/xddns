@@ -17,10 +17,12 @@ var cmdUpdate = &cli.Command{
 	Flags: []cli.Flag{
 		flagIpType,
 		flagDomain,
+		flagRegister,
 	},
 }
 
 func cmdUpdateAction(ctx *cli.Context) error {
+	register := flagRegister.Get(ctx)
 	var domain = flagDomain.Get(ctx)
 	var ipType = flagIpType.Get(ctx)
 	var ip = getLocalIP(ipType)
@@ -34,7 +36,7 @@ func cmdUpdateAction(ctx *cli.Context) error {
 	} else {
 		recordType = dns.RECORD_TYPE_AAAA
 	}
-	client, e := obtainClient(domain)
+	client, e := obtainClient(register, domain)
 	if e != nil {
 		return e
 	}

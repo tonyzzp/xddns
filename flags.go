@@ -36,3 +36,9 @@ var flagTTL = &cli.IntFlag{
 	Usage:    "域名缓存时长(秒)",
 	Required: false,
 }
+
+var flagRegister = &cli.StringFlag{
+	Name:     "register",
+	Usage:    "域名注册商 ali/cf。如果不传会自动判断，如果某个域名在多个服务商处都配置有解析，可手动传此参数",
+	Required: false,
+}

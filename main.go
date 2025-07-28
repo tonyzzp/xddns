@@ -98,12 +98,18 @@ func testAli(ctx *cli.Context) error {
 var _aliClient dns.IDns
 var _cloudflareClient dns.IDns
 
-func obtainClient(fullDomain string) (dns.IDns, error) {
+func obtainClient(register string, fullDomain string) (dns.IDns, error) {
 	if _aliClient == nil && config.Config.Ali.KeyId != "" {
 		_aliClient = ali.New()
 	}
 	if _cloudflareClient == nil && config.Config.CloudFlare.Token != "" {
 		_cloudflareClient = cf.New()
+	}
+	if register == "ali" {
+		return _aliClient, nil
+	}
+	if register == "cf" {
+		return _cloudflareClient, nil
 	}
 	var clients = []dns.IDns{_cloudflareClient, _aliClient}
 	for _, client := range clients {
@@ -136,14 +142,6 @@ func main() {
 			cmdDel,
 			cmdDump,
 			cmdIP,
-			{
-				Name:   "testCloudFlare",
-				Action: testCloudFlare,
-			},
-			{
-				Name:   "testAli",
-				Action: testAli,
-			},
 		},
 		Before: func(ctx *cli.Context) error {
 			var actionName = ctx.Args().First()

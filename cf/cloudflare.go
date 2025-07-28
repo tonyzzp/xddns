@@ -45,7 +45,7 @@ func (cf *DnsCloudFlare) resolve(domain string) (*dns.DomainResolved, error) {
 
 		}
 	}
-	return nil, errors.New("not exists")
+	return nil, errors.New("domain not exists")
 }
 
 func (cf *DnsCloudFlare) ListMainDomains() ([]dns.Domain, error) {

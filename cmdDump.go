@@ -8,8 +8,9 @@ import (
 )
 
 func cmdDumpAction(ctx *cli.Context) error {
+	register := flagRegister.Get(ctx)
 	domain := flagDomain.Get(ctx)
-	client, e := obtainClient(domain)
+	client, e := obtainClient(register, domain)
 	if e != nil {
 		return e
 	}
@@ -39,6 +40,7 @@ var cmdDump = &cli.Command{
 	Usage: "dump all dns records",
 	Flags: []cli.Flag{
 		flagDomain,
+		flagRegister,
 	},
 	Action: cmdDumpAction,
 }
