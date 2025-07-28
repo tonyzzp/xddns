@@ -18,6 +18,7 @@ type Record struct {
 	Value   string
 	Enabled bool
 	Proxied bool
+	TLT     int
 }
 
 type QueryRecordParams struct {

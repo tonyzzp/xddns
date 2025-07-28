@@ -98,6 +98,7 @@ func (da *DnsAli) ListAllRecords(mainDomain string) ([]dns.Record, error) {
 				Enabled: v.Status == "ENABLE",
 				Value:   v.Value,
 				Domain:  fullDomain,
+				TLT:     v.TTL,
 			})
 		}
 		return res.TotalCount, rtn, nil

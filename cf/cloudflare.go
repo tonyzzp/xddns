@@ -91,6 +91,7 @@ func (cf *DnsCloudFlare) ListAllRecords(domain string) ([]dns.Record, error) {
 			Value:   v.Content,
 			Enabled: true,
 			Proxied: v.Proxied,
+			TLT:     v.TTL,
 		})
 	}
 	return rtn, nil
