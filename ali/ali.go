@@ -74,6 +74,7 @@ func (da *DnsAli) ListAllRecords(mainDomain string) ([]dns.Record, error) {
 	if e != nil {
 		return nil, e
 	}
+	mainDomain = info.DomainName
 	var page = 1
 	doReq := func(page int) (int64, []dns.Record, error) {
 		res, e := api.List(DescribeDomainRecordsReq{
