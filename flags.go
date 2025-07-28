@@ -5,7 +5,7 @@ import "github.com/urfave/cli/v2"
 var flagDomain = &cli.StringFlag{
 	Name:     "domain",
 	Required: true,
-	Usage:    "完整域名，如: veikr.com , qm.pi.veikr.com",
+	Usage:    "完整域名，如: mydomain.com, music.mydomain.com",
 }
 
 var flagRecordType = &cli.StringFlag{
