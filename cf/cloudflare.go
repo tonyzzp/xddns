@@ -130,12 +130,16 @@ func (cf *DnsCloudFlare) AddRecord(params dns.AddRecordParams) error {
 	if e != nil {
 		return e
 	}
-	e = api.Create(CreateParams{
+	args := CreateParams{
 		Zone:    info.DomainName,
 		Content: params.Value,
 		Name:    params.Domain,
 		Type:    params.Type,
-	})
+	}
+	if params.TTL > 0 {
+		args.TTL = params.TTL
+	}
+	e = api.Create(args)
 	return e
 }
 
@@ -155,19 +159,29 @@ func (cf *DnsCloudFlare) EditRecord(params dns.EditRecordParams) error {
 		return e
 	}
 	if len(exist) == 0 {
-		return cf.AddRecord(dns.AddRecordParams{
+		args := dns.AddRecordParams{
 			Domain: params.Domain,
 			Type:   params.Type,
 			Value:  params.Value,
-		})
+			TTL:    params.TTL,
+		}
+		if params.TTL > 0 {
+			args.TTL = params.TTL
+		}
+		return cf.AddRecord(args)
 	} else {
 		first := exist[0]
-		e = api.Update(UpdateParams{
+		args := UpdateParams{
 			Zone:     info.DomainName,
 			RecordID: first.Id,
 			Type:     params.Type,
 			Content:  params.Value,
-		})
+			TTL:      params.TTL,
+		}
+		if params.TTL > 0 {
+			args.TTL = params.TTL
+		}
+		e = api.Update(args)
 		return e
 	}
 }

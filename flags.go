@@ -30,3 +30,9 @@ var flagConfig = &cli.StringFlag{
 	Usage:    "xddns-config.yaml文件",
 	Required: false,
 }
+
+var flagTTL = &cli.IntFlag{
+	Name:     "ttl",
+	Usage:    "域名缓存时长(秒)",
+	Required: false,
+}

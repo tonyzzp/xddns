@@ -29,13 +29,7 @@ type AddRecordParams struct {
 	Domain string
 	Type   string
 	Value  string
-}
-
-type UpdateRecordParams struct {
-	Id     string
-	Domain string
-	Type   string
-	Value  string
+	TTL    int
 }
 
 type DelRecordParams struct {
@@ -47,6 +41,7 @@ type EditRecordParams struct {
 	Domain string
 	Type   string
 	Value  string
+	TTL    int
 }
 
 type Domain struct {

@@ -174,6 +174,7 @@ func (da *DnsAli) AddRecord(params dns.AddRecordParams) error {
 		Type:       params.Type,
 		RR:         info.RR,
 		Value:      params.Value,
+		TTL:        params.TTL,
 	})
 	return e
 }
@@ -200,6 +201,7 @@ func (da *DnsAli) EditRecord(params dns.EditRecordParams) error {
 		Domain: params.Domain,
 		Type:   params.Type,
 		Value:  params.Value,
+		TTL:    params.TTL,
 	})
 }
 

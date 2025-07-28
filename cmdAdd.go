@@ -16,6 +16,7 @@ var cmdAdd = &cli.Command{
 		flagDomain,
 		flagRecordType,
 		flagValue,
+		flagTTL,
 	},
 	Action: actionAdd,
 }
@@ -24,6 +25,7 @@ func actionAdd(ctx *cli.Context) error {
 	domain := flagDomain.Get(ctx)
 	t := flagRecordType.Get(ctx)
 	value := flagValue.Get(ctx)
+	ttl := flagTTL.Get(ctx)
 	if t == "" {
 		return errors.New("need param --type")
 	}
@@ -36,5 +38,6 @@ func actionAdd(ctx *cli.Context) error {
 		Domain: domain,
 		Type:   t,
 		Value:  value,
+		TTL:    ttl,
 	})
 }
