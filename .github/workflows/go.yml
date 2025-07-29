@@ -46,3 +46,11 @@ jobs:
     - name: Dump Files
       run: |
         ls -lah
+
+    - name: Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: |
+          xddns-linux-amd64
+          xddns-linux-arm64
+          xddns-windows-amd64.exe
