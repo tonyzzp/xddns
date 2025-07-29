@@ -50,6 +50,7 @@ jobs:
     - name: Release
       uses: softprops/action-gh-release@v2
       with:
+        name: latest
         files: |
           xddns-linux-amd64
           xddns-linux-arm64
