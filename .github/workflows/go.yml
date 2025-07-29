@@ -31,13 +31,21 @@ jobs:
       with:
         go-version-file: go.mod
 
-    - name: Build Linux
+    - name: Build Linux amd64
       run: |
         go env -w GOOS=linux
         go env -w GOARCH=amd64
         go env
         go build -ldflags="-s -w" -trimpath -v -o xddns-linux-amd64 .
 
+    - name: Build Linux arm64
+      run: |
+        go env -w GOOS=linux
+        go env -w GOARCH=arm64
+        go env
+        go build -ldflags="-s -w" -trimpath -v -o xddns-linux-arm64.exe .
+
+    
     - name: Build windows
       run: |
         go env -w GOOS=windows
