@@ -52,5 +52,6 @@ jobs:
     - name: Release
       uses: ncipollo/release-action@v1
       with:
-        name: "Build - ${{ github.sha }}"
-        tagName: ${{ github.sha }}
+        name: latest
+        tagName: latest
+        tag: latest
