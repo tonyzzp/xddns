@@ -48,7 +48,7 @@ jobs:
         ls -lah
 
     - name: Release
-      uses: softprops/action-gh-release@v2
+      uses: ncipollo/release-action@v1
       with:
         name: latest
         files: |
