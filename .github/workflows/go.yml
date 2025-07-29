@@ -51,7 +51,4 @@ jobs:
       uses: ncipollo/release-action@v1
       with:
         name: latest
-        files: |
-          xddns-linux-amd64
-          xddns-linux-arm64
-          xddns-windows-amd64.exe
+        tag: ${{ github.sha }}
