@@ -19,7 +19,9 @@ jobs:
     - name: Cache
       uses: actions/cache@v4.2.3
       with:
-        path: /gocache
+        path: |
+          /home/runner/go/pkg/mod
+          /home/runner/.cache/go-build
         key: gocache
         restore-keys: gocache
         
@@ -28,11 +30,6 @@ jobs:
       uses: actions/setup-go@v5.5.0
       with:
         go-version-file: go.mod
-
-    - name: Set Go Env
-      run: |
-        go env -w GOCACHE=/gocache
-        go env -w GOMODCACHE=/gocache
 
     - name: Build Linux
       run: |
